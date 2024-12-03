@@ -35,6 +35,7 @@ invisible(lapply(packages, library, character.only = TRUE))
 
 ## Initial Model Creation
 ```{r}
+set.seed(331)
 df <- read_csv("JAMAMA.csv")
 df$POS <- as.factor(ifelse(df$POS == "Y", 1,0))
 
