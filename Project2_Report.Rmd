@@ -7,10 +7,8 @@ output: html_document
 
 ## Abstract
 
-
+The English Premier League has seen a noticeable rise in US viewership over recent years - contributing to the already wide scale popularity of the sport. No matter the sport, refereeing seems to be a major speaking point across fan bases whether that be the call inconsistencies, missed calls, or speculative fouls. The purpose of this report is to understand whether there is an inconsistency in refereeing and whether or not it has a significant impact on the result of any given match.
 
 ## Methodology
-
-
 
 ## Results

@@ -1,0 +1,150 @@
+---
+title: "Model Creation"
+author: "Andrew H. & Juan G."
+date: "2024-12-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+# GENERAL LIBRARY INSTALLER AND LOADER
+# Package names
+packages <- c("tidyverse","tidymodels","sf",
+              "ggplot2", "ggmap", "RColorBrewer",
+              "patchwork","fields","MASS",
+              "dbscan","here","kknn",
+              "xgboost","readr","forecast",
+              "forecastHybrid","fpp2","TTR",
+              "dplyr","lubridate","plotly",
+              "rio","tseries","zoo","keras",
+              "tensorflow", "plotly", "glmnet",
+              "GGally")
+              
+# Install packages not yet installed
+installed_packages <- packages %in% rownames(installed.packages())
+if (any(installed_packages == FALSE)) {
+  install.packages(packages[!installed_packages])
+}
+
+# Packages loading
+invisible(lapply(packages, library, character.only = TRUE))
+```
+
+## Initial Model Creation
+```{r}
+df <- read_csv("JAMAMA.csv")
+df$POS <- as.factor(ifelse(df$POS == "Y", 1,0))
+
+## Creating a Basic Logistic Regression Model
+logmod <- glm(POS ~ ., 
+                      data = df |> select(-Div, -Date, -Time, -HomeTeam, -AwayTeam), 
+                      family = "binomial")
+
+summary(logmod)
+```
+```{r}
+pred <- df |>
+  select_if(is.numeric)
+
+resp <- df$POS
+
+pred_matrix <- as.matrix(pred)
+
+lasso <- cv.glmnet(x = pred_matrix,
+                   y = resp,
+                   family = "binomial",
+                   alpha = 1)
+
+lambda <- lasso$lambda.min
+lambda
+
+final_lasso <- glmnet(x = pred_matrix, 
+                      y = resp, 
+                      family = "binomial", 
+                      alpha = 1, 
+                      lambda = lambda)
+
+coef <- coef(final_lasso)
+print(coef)
+
+plot(lasso)
+
+
+predprob <- predict(final_lasso, newx = pred_matrix, type = "response")
+pred_classes <- ifelse(predprob > 0.5, 1, 0)
+
+table(Predicted = pred_classes, Actual = resp)
+
+accuracy <- mean(pred_classes == resp)
+cat("Accuracy:", accuracy, "\n")
+```
+## Training Testing
+```{r}
+df <- df |>
+  mutate(Date = as.Date(Date, format = "%d/%m/%Y"))
+train <- df |>
+  filter(Date >= as.Date("2020-01-01") & Date <= as.Date("2021-12-31"))
+test <- df |>
+  filter(Date >= as.Date("2022-01-01") & Date <= as.Date("2022-12-31"))
+
+train_preds <- train |>
+  select_if(is.numeric)
+train_resp <- train$POS
+train_preds_matrix <- as.matrix(train_preds)
+
+test_preds <- test |>
+  select_if(is.numeric)
+test_resp <- test$POS
+test_preds_matrix <- as.matrix(test_preds)
+
+lasso <- cv.glmnet(x = train_preds_matrix,
+                   y = train_resp,
+                   family = "binomial",
+                   alpha = 1)
+
+lambda1 <- lasso$lambda.min
+lambda1
+
+final_lasso <- glmnet(x = test_preds_matrix, 
+                      y = test_resp, 
+                      family = "binomial", 
+                      alpha = 1, 
+                      lambda = lambda1)
+
+coef <- coef(final_lasso)
+print(coef)
+
+plot(lasso)
+
+
+predprob <- predict(final_lasso, newx = test_preds_matrix, type = "response")
+pred_classes <- ifelse(predprob > 0.5, 1, 0)
+
+table(Predicted = pred_classes, Actual = test_resp)
+
+accuracy <- mean(pred_classes == test_resp)
+cat("Accuracy:", accuracy, "\n")
+```
+
+
+```{r}
+non_zero_coef <- coef(final_lasso, s = "lambda.min")
+selected_vars <- rownames(non_zero_coef)[non_zero_coef[, 1] != 0]  # Variables with non-zero coefficients
+selected_vars <- selected_vars[selected_vars != "(Intercept)"]  # Exclude intercept
+
+# Prepare the dataset for ggpairs
+final_model_data <- df %>%
+  select(all_of(selected_vars), POS)
+
+# Convert POS back to factor for better visualization
+final_model_data$POS <- as.factor(ifelse(final_model_data$POS == 1, "Yes", "No"))
+
+# Generate the ggpairs plot
+ggpairs_plot <- ggpairs(final_model_data, aes(alpha = 0.7))
+print(ggpairs_plot)
+```
+
+
