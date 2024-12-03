@@ -1,0 +1,16 @@
+---
+title: "Project 2 Report"
+author: "Andrew H. & Juan G."
+date: "2024-12-03"
+output: html_document
+---
+
+## Abstract
+
+
+
+## Methodology
+
+
+
+## Results
