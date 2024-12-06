@@ -21,7 +21,7 @@ packages <- c("tidyverse","tidymodels","sf",
               "dplyr","lubridate","plotly",
               "rio","tseries","zoo","keras",
               "tensorflow", "plotly", "glmnet",
-              "GGally")
+              "GGally", "lme4","ggeffects")
               
 # Install packages not yet installed
 installed_packages <- packages %in% rownames(installed.packages())
@@ -146,6 +146,35 @@ final_model_data$POS <- as.factor(ifelse(final_model_data$POS == 1, "Yes", "No")
 # Generate the ggpairs plot
 ggpairs_plot <- ggpairs(final_model_data, aes(alpha = 0.7))
 print(ggpairs_plot)
+
 ```
+
+```{r}
+final_coefficients <- coef(final_lasso, s = "lambda.min")
+selected_vars <- rownames(final_coef)[final_coef[, 1] != 0]
+selected_vars <- selected_vars[selected_vars != "(Intercept)"]  # Exclude intercept
+
+# Prepare the dataset with the selected variables
+mixed_model_data <- df |>
+  dplyr::select(all_of(selected_vars), POS)
+
+# Add back any grouping variable if needed (e.g., Team or Match)
+# Assuming "HomeTeam" is a grouping variable
+mixed_model_data <- df |>
+  dplyr::select(all_of(selected_vars), POS, Referee)
+
+# Convert POS to a factor for mixed-effects modeling
+mixed_model_data$POS <- as.factor(ifelse(mixed_model_data$POS == 1, "Yes", "No"))
+
+# Fit the mixed-effects model
+# Assuming HomeTeam is the random effect
+mixed_effect_model <- glmer(POS ~ . + (1 | Referee), 
+                            data = mixed_model_data, 
+                            family = binomial)
+
+# Print the model summary
+summary(mixed_effect_model, correlation = TRUE)
+```
+
 
 
