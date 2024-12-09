@@ -7,14 +7,4 @@ The initial model created was a logistic regression model with the Predicted Out
 
 After the initial logistic regression model was performed, LASSO was used for model selection. The model was created and first performed on the entire EPL_New.csv data set.
 
-![](Model Photos/First lasso coefs.png){width="308"}
-
-![](Model Photos/First lasso acc.png){width="315"}
-
-![](Model Photos/firstlasso.png){width="470"}
-
-The first lasso created was untrained and predicted over the entire dataset the resulting minimal $\lambda = 0.01059308$ and an accuracy rating marginally better than a coin flip. As a result we created another lasso model, training this time on matches from years 2020 - 2021 and testing it it on matches played throughout 2022.
-
-![](Model Photos/finalacc.png){width="319"}
-
-![](Model Photos/finallasso.png){width="472"}
+![](Model Photos/First lasso coefs.png)
