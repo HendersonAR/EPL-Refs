@@ -87,10 +87,10 @@ coef_df <- as.data.frame(as.matrix(coef)) |>
   rename(`Coefficient Value` = s0) |>
   filter(`Coefficient Value` != 0) # Exclude coefficients that are zero
 
-# Count predicted classes
+
 predicted_count <- table(Predicted = pred_classes, Actual = resp)
 
-# Create summary table
+
 summary_table <- tibble(
   Metric = c("Accuracy", "Predicted 0", "Predicted 1"),
   Value = c(
@@ -100,7 +100,7 @@ summary_table <- tibble(
   )
 )
 
-# Display data tables
+
 cat("Coefficients Table:\n")
 print(coef_df)
 cat("\nModel Summary Table:\n")
@@ -153,6 +153,29 @@ table(Predicted = pred_classes, Actual = test_resp)
 
 accuracy <- mean(pred_classes == test_resp)
 cat("Accuracy:", accuracy, "\n")
+
+coef_dfinal <- as.data.frame(as.matrix(coef)) |>
+  rownames_to_column(var = "Coefficient Name") |>
+  rename(`Coefficient Value` = s0) |>
+  filter(`Coefficient Value` != 0) 
+
+
+predicted_count <- table(Predicted = pred_classes, Actual = test_resp)
+
+
+summary_table <- tibble(
+  Metric = c("Accuracy", "Predicted 0", "Predicted 1"),
+  Value = c(
+    accuracy,
+    sum(pred_classes == 0),
+    sum(pred_classes == 1)
+  )
+)
+
+cat("Coefficients Table:\n")
+print(coef_df)
+cat("\nModel Summary Table:\n")
+print(summary_table)
 ```
 
 
