@@ -36,10 +36,9 @@ invisible(lapply(packages, library, character.only = TRUE))
 ## Initial Model Creation
 ```{r}
 set.seed(331)
-df <- read_csv("JAMAMA.csv")
+df <- read_csv("EPL_New.csv")
 df$POS <- as.factor(ifelse(df$POS == "Y", 1,0))
 
-## Creating a Basic Logistic Regression Model
 logmod <- glm(POS ~ ., 
                       data = df |> select(-Div, -Date, -Time, -HomeTeam, -AwayTeam), 
                       family = "binomial")
@@ -82,6 +81,32 @@ table(Predicted = pred_classes, Actual = resp)
 accuracy <- mean(pred_classes == resp)
 cat("Accuracy:", accuracy, "\n")
 ```
+```{r}
+coef_df <- as.data.frame(as.matrix(coef)) |>
+  rownames_to_column(var = "Coefficient Name") |>
+  rename(`Coefficient Value` = s0) |>
+  filter(`Coefficient Value` != 0) # Exclude coefficients that are zero
+
+# Count predicted classes
+predicted_count <- table(Predicted = pred_classes, Actual = resp)
+
+# Create summary table
+summary_table <- tibble(
+  Metric = c("Accuracy", "Predicted 0", "Predicted 1"),
+  Value = c(
+    accuracy,
+    sum(pred_classes == 0),
+    sum(pred_classes == 1)
+  )
+)
+
+# Display data tables
+cat("Coefficients Table:\n")
+print(coef_df)
+cat("\nModel Summary Table:\n")
+print(summary_table)
+```
+
 ## Training Testing
 ```{r}
 df <- df |>
@@ -133,48 +158,21 @@ cat("Accuracy:", accuracy, "\n")
 
 ```{r}
 non_zero_coef <- coef(final_lasso, s = "lambda.min")
-selected_vars <- rownames(non_zero_coef)[non_zero_coef[, 1] != 0]  # Variables with non-zero coefficients
-selected_vars <- selected_vars[selected_vars != "(Intercept)"]  # Exclude intercept
+selected_vars <- rownames(non_zero_coef)[non_zero_coef[, 1] != 0]
+selected_vars <- selected_vars[selected_vars != "(Intercept)"] 
 
-# Prepare the dataset for ggpairs
 final_model_data <- df %>%
   select(all_of(selected_vars), POS)
 
-# Convert POS back to factor for better visualization
+
 final_model_data$POS <- as.factor(ifelse(final_model_data$POS == 1, "Yes", "No"))
 
-# Generate the ggpairs plot
 ggpairs_plot <- ggpairs(final_model_data, aes(alpha = 0.7))
 print(ggpairs_plot)
 
 ```
 
-```{r}
-final_coefficients <- coef(final_lasso, s = "lambda.min")
-selected_vars <- rownames(final_coef)[final_coef[, 1] != 0]
-selected_vars <- selected_vars[selected_vars != "(Intercept)"]  # Exclude intercept
 
-# Prepare the dataset with the selected variables
-mixed_model_data <- df |>
-  dplyr::select(all_of(selected_vars), POS)
-
-# Add back any grouping variable if needed (e.g., Team or Match)
-# Assuming "HomeTeam" is a grouping variable
-mixed_model_data <- df |>
-  dplyr::select(all_of(selected_vars), POS, Referee)
-
-# Convert POS to a factor for mixed-effects modeling
-mixed_model_data$POS <- as.factor(ifelse(mixed_model_data$POS == 1, "Yes", "No"))
-
-# Fit the mixed-effects model
-# Assuming HomeTeam is the random effect
-mixed_effect_model <- glmer(POS ~ . + (1 | Referee), 
-                            data = mixed_model_data, 
-                            family = binomial)
-
-# Print the model summary
-summary(mixed_effect_model, correlation = TRUE)
-```
 
 
 
