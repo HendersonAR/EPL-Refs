@@ -1,0 +1,12 @@
+---
+title: "ARH-Model Draft"
+output: html_document
+---
+
+The initial model created was a logistic regression model with the Predicted Outcome Success varible being our binary reponse and using all other numeric variables as predictors. The intention was to understand if in this darts at the wall model would yield any statistically significant variables - Full-time Result Home Win (p \< 0.00556), Away Yellow (p \< 0.01577), Bet 365 Away Closing Odds (p \< 0.03799).This generally didn't tell us much about our initial research question outside of that Away Yellow was significant.
+
+After the initial logistic regression model was performed, LASSO was used for model selection. The model was created and first performed on the entire EPL_New.csv data set.
+
+![](Model Photos/Screenshot 2024-12-09 at 2.13.46 PM.png)
+
+![](Model Photos/Screenshot 2024-12-09 at 2.14.02 PM.png)
