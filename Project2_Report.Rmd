@@ -1,6 +1,6 @@
 ---
 title: "EPL Exploratory Analysis & Model Creation"
-author: "Andrew H. & Juan G."
+author: " Juan G. & Andrew H."
 date: "2024-12-03"
 output: html_document
 ---
@@ -11,22 +11,36 @@ The English Premier League has seen a noticeable rise in US viewership over rece
 
 ## Methodology
 
-The model creation process in this report started the final_dataset.csv file dowloaded from Kaggle.com with variables regarding Home/Away team, total booking points, Away/Home Cards, Referee, etc. Using this data we generated some variables seen on the EPL_New.csv some of these are Predicted Outcome Success (POS), Expected Result (ExpectedR), Expected Result Odds (ERO), Home/Away/Total Booking Points (HBP,ABP,TBP). Other variables that were taken into consideration were Bet365 Closing Odds.
+The model creation process in this report started the final_dataset.csv file dowloaded from Kaggle.com with variables regarding Home/Away team, total booking points, Away/Home Cards, Referee, etc. Using this data we generated some variables seen on the EPL_New.csv some of these are Predicted Outcome Success (POS), Expected Result (ExpectedR), Expected Result Odds (ERO), Home/Away/Total Booking Points (HBP,ABP,TBP). Other variables that were taken into consideration were Bet365 Closing Odds (B365CH & B365CA).
 
 POS and ExpectedR were both treated as binary variables. Although in english football matches can result in a draw - bookies release closing odds based on whether a team wins or losings. Fitting a logistic regression model with a draw wouldn't make much sense.
 
-This report contains initial data analysis and exploration, logistic regression, Lasso variable selection and model prediction. The analyses and visualizations done within this report was created with a combination of RStudio, Jamovi, Jupyter Notebook.
+This report contains initial data analysis and exploration, logistic regression, Lasso variable selection and model prediction. The analyses and visualizations done within this report was created with a combination of RStudio, Jamovi, Jupyter Lab.
 
 ## Discussion
 
 Initially the question we wanted to answer was did booking points - points calculated by yellow/red cards given during the match - significantly impacted a match's outcome. Following this curiosity we wanted to know if there was consistency between the yellow/red cards given throughout a game and the referee's issuing them.
 
-![](Model Photos/redcard_density.png){width="229"}
+![](Model%20Photos/redcard_density.png){width="229"}
 
-Since red cards are issuance is rare in the EPL it's to no surprise that the density plots show that most referees don't issue red cards much - this was expected given what we know about the EPL.
+Since red cards issuance is rare in the sport it's to no surprise that the density plots show that most referees don't issue red cards much - this was expected given what we know. It is worth noting that some referee's density at one red card given stood out though, for example Graham Scott and Paul Tierney.
 
-![](Model Photos/yellow.png)
+![](Model%20Photos/yellow.png)
 
 This photo depicts the differences between referees and their yellow card issuance rate. We noticed that yellow card issuance (on a game-to-game basis) highly varied between referees. This visualization peaked our interest and sparked our initial research question. We figured that there was going to be variability between referees; however, we didn't expect this much variable among yellow card issuance.
 
-Continuing our in our exploratory process we wanted to understand how many booking points a team received given the amount of fouls they had committed. (JUAN - EXPLAIN THE NORMALIZED BOOKING POINTS)
+![](Model%20Photos/ANOVA.png){width="429"}
+
+Just for further confirmation, we then wanted to run an ANOVA model to see if we really had a significant difference in means across referees, this would eliminate any worries of certaing referees officiating more or less matches than others. When choosing the variable to run ANOVA on - we realized we wanted to grasp a referees' card impact through one variable, total booking points. This is a computed variable that football-data.co.uk (the original source of the data) mentions on their website; It gives each yellow card per match a value of 10 points, and a red card 25 points. For the situation in which a player received a red card through two yellow cards, the first yellow card was counted as 10 points, while the second was just counted as a red card, 25 points. Back to our ANOVA model, the p-value for referees was \< 0.00001. This tells us that referees impact on total booking points per game is statistically significant and can be attributed to individual referee's decision-making.
+
+Continuing our in our exploratory process we wanted to take a closer look at booking points through a couple of models made in Jupyter Lab:
+
+![![](Model%20Photos/avg_bp&fls.png)](Model%20Photos/team_avg_bp.png)
+
+![](Model%20Photos/line_bp&fls.png)
+
+The three graphs shown above depict our thought process as we started exploring. First, we started with a simple bar graph of average booking points per team. We thought this would be useful as we push for a case of favoritism among the league towards specific teams. It's often something fans and even professionals in the sport theorize about as they feel a preference is shown to teams by giving them less cards. The second graph above then paired each team's value for average booking points with average fouls. At this point we began to see if we could find any difference between the two, because if we consider what we're looking for - refereeing consistency - then we would expect to see that for more fouls, more booking points were given. That's where we step into our third graph and see that this is not the case. We switched to line graphs here to enhance the variation in both values across the teams. For this graph we would have expected lines which were more parallel than not, in order to depict consistency in booking points by foul.
+
+![](Model Photos/bp_per_foul.png)
+
+After pulling the values observed in the graphs previously shown, we calculated a new value: booking points per foul. We found this was something quite interesting to both visualize and consider as we think about refereeing consistency. This line graph showed us how much booking points per foul varies by team, with Everton seeing their fouls being more penalized than others, and Liverpool being penalized less by others. To put why this is an issue into perspective - Liverpool saw a yellow card (10 booking points) for about every 10 fouls they committed, while Everton faced the same amount of booking points in half the amount of fouls committed.
