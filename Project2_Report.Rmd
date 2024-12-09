@@ -44,3 +44,21 @@ The three graphs shown above depict our thought process as we started exploring.
 ![](Model%20Photos/bp_per_foul.png)
 
 After pulling the values observed in the graphs previously shown, we calculated a new value: booking points per foul. We found this was something quite interesting to both visualize and consider as we think about refereeing consistency. This line graph showed us how much booking points per foul varies by team, with Everton seeing their fouls being more penalized than others, and Liverpool being penalized less by others. To put why this is an issue into perspective - Liverpool saw a yellow card (10 booking points) for about every 10 fouls they committed, while Everton faced the same amount of booking points in half the amount of fouls committed.
+
+The initial model created was a logistic regression model with the Predicted Outcome Success varible being our binary reponse and using all other numeric variables as predictors. The intention was to understand if in this darts at the wall model would yield any statistically significant variables - Full-time Result Home Win (p \< 0.00556), Away Yellow (p \< 0.01577), Bet 365 Away Closing Odds (p \< 0.03799).This generally didn't tell us much about our initial research question outside of that Away Yellow was significant.
+
+After the initial logistic regression model was performed, LASSO was used for model selection. The model was created and first performed on the entire EPL_New.csv data set.
+
+![](Model%20Photos/First%20lasso%20coefs.png){width="308"}
+
+![](Model%20Photos/First%20lasso%20acc.png){width="315"}
+
+![](Model Photos/firstlasso.png){width="475"}
+
+The first lasso created was untrained and predicted over the entire dataset the resulting minimal $\lambda = 0.01059308$ and an accuracy of 66% - marginally better than a coin flip. As a result we created another lasso model, training this time on matches from years 2020 - 2021 and testing it it on matches played throughout 2022. This resulted in better overall prediction accuracy over the 2022 matches at 75% and a $\lambda = 0.01821493$
+
+![](Model Photos/finalacc.png){width="307"}
+
+![](Model%20Photos/finallasso.png){width="472"}
+
+## Conclusions & Limitations
