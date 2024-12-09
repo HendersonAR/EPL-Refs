@@ -7,6 +7,6 @@ The initial model created was a logistic regression model with the Predicted Out
 
 After the initial logistic regression model was performed, LASSO was used for model selection. The model was created and first performed on the entire EPL_New.csv data set.
 
-![](Model Photos/Screenshot 2024-12-09 at 2.13.46 PM.png)
+![](Model Photos/Screenshot 2024-12-09 at 2.13.46 PM.png){width="323"}
 
-![](Model Photos/Screenshot 2024-12-09 at 2.14.02 PM.png)
+![](Model Photos/Screenshot 2024-12-09 at 2.14.02 PM.png){width="329"}
