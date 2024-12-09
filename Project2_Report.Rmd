@@ -1,5 +1,5 @@
 ---
-title: "EPL Exploratory Analysis & Model Creation"
+title: "Project 2 Report"
 author: "Andrew H. & Juan G."
 date: "2024-12-03"
 output: html_document
@@ -15,17 +15,17 @@ The model creation process in this report started the final_dataset.csv file dow
 
 POS and ExpectedR were both treated as binary variables. Although in english football matches can result in a draw - bookies release closing odds based on whether a team wins or losings. Fitting a logistic regression model with a draw wouldn't make much sense.
 
-This report contains initial data analysis and exploration, logistic regression, Lasso variable selection and model prediction. The analyses and visualizations done within this report was created with a combination of RStudio, Jamovi, Jupyter Notebook.
+This report contains initial data analysis and exploration, logistic regression, Lasso variable selection and model prediction.
 
 ## Discussion
 
 Initially the question we wanted to answer was did booking points - points calculated by yellow/red cards given during the match - significantly impacted a match's outcome. Following this curiosity we wanted to know if there was consistency between the yellow/red cards given throughout a game and the referee's issuing them.
 
-![](Model Photos/redcard_density.png){width="229"}
+[**PHOTO FOR RED**]{.underline}
 
 Since red cards are issuance is rare in the EPL it's to no surprise that the density plots show that most referees don't issue red cards much - this was expected given what we know about the EPL.
 
-![](Model Photos/yellow.png)
+[**PHOTO FOR YELLOW**]{.underline}
 
 This photo depicts the differences between referees and their yellow card issuance rate. We noticed that yellow card issuance (on a game-to-game basis) highly varied between referees. This visualization peaked our interest and sparked our initial research question. We figured that there was going to be variability between referees; however, we didn't expect this much variable among yellow card issuance.
 
