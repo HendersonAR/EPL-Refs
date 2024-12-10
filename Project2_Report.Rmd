@@ -43,7 +43,7 @@ The three graphs shown above depict our thought process as we started exploring.
 
 ![](Model%20Photos/bp_per_foul.png)
 
-After pulling the values observed in the graphs previously shown, we calculated a new value: booking points per foul. We found this was something quite interesting to both visualize and consider as we think about refereeing consistency. This line graph showed us how much booking points per foul varies by team. Looking at the extremes, Everton saw their fouls penalized more harshly than others, while Liverpool were penalized the least. To put this issue into perspective: Liverpool received a yellow card (10 booking points) for approximately every 10 fouls they committed, whereas Everton received the same amount of booking points for committing only half as many fouls.
+After pulling the values observed in the graphs previously shown, we calculated a new value: booking points per foul. We found this was something quite interesting to both visualize and consider as we think about refereeing consistency. This line graph showed us how much booking points per foul varies by team. Looking at the extremes, Everton saw their fouls penalized more harshly than others, while Liverpool were penalized the least. To put this issue into perspective: Liverpool received the equivalent to a yellow card (10 booking points) for approximately every 10 fouls they committed, whereas Everton received the same amount of booking points for committing only half as many fouls.
 
 ![](Model Photos/normalized_diff.png)
 
