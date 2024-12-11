@@ -31,7 +31,7 @@ This photo depicts the differences between referees and their yellow card issuan
 
 ![](Model%20Photos/ANOVA.png){width="429"}
 
-Just for further confirmation, we then wanted to run an ANOVA model to see if we really had a significant difference in means across referees, this would eliminate any worries of certaing referees officiating more or less matches than others. When choosing the variable to run ANOVA on - we realized we wanted to grasp a referees' card impact through one variable, total booking points. This is a computed variable that football-data.co.uk (the original source of the data) mentions on their website; It gives each yellow card per match a value of 10 points, and a red card 25 points. For the situation in which a player received a red card through two yellow cards, the first yellow card was counted as 10 points, while the second was just counted as a red card, 25 points. Back to our ANOVA model, the p-value for referees was \< 0.00001. This tells us that referees impact on total booking points per game is statistically significant and can be attributed to individual referee's decision-making.
+Just for further confirmation, we then wanted to run an ANOVA model to see if we really had a significant difference in means across referees, this would eliminate any worries of certain referees officiating more or less matches than others. When choosing the variable to run ANOVA on - we realized we wanted to grasp a referees' card impact through one variable, total booking points. This is a computed variable that football-data.co.uk (the original source of the data) mentions on their website; It gives each yellow card per match a value of 10 points, and a red card 25 points. For the situation in which a player received a red card through two yellow cards, the first yellow card was counted as 10 points, while the second was just counted as a red card, 25 points. Back to our ANOVA model, the p-value for referees was \< 0.00001. This tells us that referees impact on total booking points per game is statistically significant and can be attributed to individual referee's decision-making.
 
 Continuing our in our exploratory process we wanted to take a closer look at booking points through a couple of models made in Jupyter Lab:
 
@@ -45,11 +45,11 @@ The three graphs shown above depict our thought process as we started exploring.
 
 After pulling the values observed in the graphs previously shown, we calculated a new value: booking points per foul. We found this was something quite interesting to both visualize and consider as we think about refereeing consistency. This line graph showed us how much booking points per foul varies by team, with Everton seeing their fouls being more penalized than others, and Liverpool being penalized less by others. To put why this is an issue into perspective - Liverpool saw a yellow card (10 booking points) for about every 10 fouls they committed, while Everton faced the same amount of booking points in half the amount of fouls committed.
 
-[**Transition from GENERAL TO LASSO VS**]{.underline}
+After finishing our exploratory analyses, we were curious about other statistically significant variables in relation to the predicted outcome success (POS). In this next portion we wanted moved away from referees and focused more on the numerical values in our model. This following analyses fit a logistic regression model and performed variable selection to determine which numerical predictors had the held the most significance. The fitted logistic regression model was fit to give us a general understanding of what variables might be significant - although this approach alone differed from Least Absolute Shrinkage and Selection Operator (LASSO).
 
 The initial model created was a logistic regression model with the Predicted Outcome Success variable being our binary reponse and using all other numeric variables as predictors. The intention was to understand if in this darts at the wall model would yield any statistically significant variables - Full-time Result Home Win (p \< 0.00556), Away Yellow (p \< 0.01577), Bet 365 Away Closing Odds (p \< 0.03799).This generally didn't tell us much about our initial research question outside of that Away Yellow was significant.
 
-After the initial logistic regression model was performed, LASSO was used for model selection. The model was created and first performed on the entire EPL_New.csv data set.
+After the initial logistic regression model was performed, LASSO was used for model selection. The model was created and first performed on the entire EPL_New.csv data set. LASSO is an extension of OLS that performs shrinkage and variable selection simultaneously. LASSO shrinks standardized coefficients exactly to 0 by applying a L1 penalty - the portion responsible for removing non-significant coefficients from the model. This shrinkage depends on the selected $\lambda$ - a higher $\lambda$ results in greater model shrinkage.
 
 ![](Model%20Photos/First%20lasso%20coefs.png){width="308"}
 
@@ -59,8 +59,14 @@ After the initial logistic regression model was performed, LASSO was used for mo
 
 The first lasso created was untrained and predicted over the entire dataset the resulting minimal $\lambda = 0.01059308$ and an accuracy of 66% - marginally better than a coin flip. As a result we created another lasso model, training this time on matches from years 2020 - 2021 and testing it it on matches played throughout 2022. This resulted in better overall prediction accuracy over the 2022 matches at 75% and a $\lambda = 0.01821493$
 
+![](Model Photos/Finalcoef.png){width="316"}
+
 ![](Model%20Photos/finalacc.png){width="307"}
 
 ![](Model%20Photos/finallasso.png){width="472"}
 
 ## Conclusions & Limitations
+
+[**(JUAN'S PORTION)**]{.underline}
+
+After training our LASSO model using 2020 - 2021 matches the final model performed better at predicting the 2022 matches; however, I suspect that a few of our coefficients might have been penalized because the Bet365 predictors were highly correlated. LASSO often struggles when predictors are highly correlated because it will arbitrarily select one variable then shrinks the remaining to zero. Another limitation that should be kept in mind when performing LASSO is that the L1 penalty applied can be too aggressive and will lead to variables that still yield some predictive power. Although our final model tested on 2022 yielded better results than the initial LASSO model - from 66% to \~ 75% accuracy - there could have been predictors forced to zero that may have predictive power. This could use some further refinement though for now it's a step in the right direction. Returning to our original question, our model did select the variables Away Fouls (AF), Away Booking Points (ABP), and Total Booking Points (TBP) as predictors that yielded significant predictive power in the final model. Moving forward, I'm curious if AF and ABP had been arbitrarily selected given the aggressiveness of the L1 penalty applied or if this lends into the notion that there is an inherent "home pitch" advantage.
