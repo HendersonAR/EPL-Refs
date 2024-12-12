@@ -1,8 +1,10 @@
 ---
 title: "EPL Exploratory Analysis & Model Creation"
-author: " Juan G. & Andrew H."
+author: ' Juan G. & Andrew H.'
 date: "2024-12-03"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ## Abstract
